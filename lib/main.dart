@@ -17,13 +17,16 @@ class _HomeState extends State<Home> {
   TextEditingController pesoController = TextEditingController();
   TextEditingController alturaController = TextEditingController();
 
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   String _infoText = "Informe seus dados!";
 
   void _resetFields(){
+    pesoController.text = "" ;
+    alturaController.text = "" ;
     setState((){
-      pesoController.text = "" ;
-      alturaController.text = "" ;
       _infoText = "Informe seus dados!";
+      _formKey = GlobalKey<FormState>();
     });
   }
 
@@ -65,53 +68,70 @@ class _HomeState extends State<Home> {
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
           padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Icon(
-                Icons.person_outlined,
-                size: 120.0,
-                color: Colors.green,
-              ),
-              TextField(
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                    labelText: "Peso (kg)",
-                    labelStyle: TextStyle(color: Colors.green)),
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.green, fontSize: 25),
-                controller: pesoController,
-              ),
-              TextField(
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                    labelText: "Altura (cm)",
-                    labelStyle: TextStyle(color: Colors.green)),
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.green, fontSize: 25),
-                controller: alturaController,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 10, bottom: 0),
-                child: Container(
-                  height: 50,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(primary: Colors.green),
-                    onPressed: _calculate,
-                    child: Text(
-                      "Calcular",
-                      style: TextStyle(color: Colors.white, fontSize: 25),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Icon(
+                  Icons.person_outlined,
+                  size: 120.0,
+                  color: Colors.green,
+                ),
+                TextFormField(
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                      labelText: "Peso (kg)",
+                      labelStyle: TextStyle(color: Colors.green)),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.green, fontSize: 25),
+                  controller: pesoController,
+                  validator: (value) {
+                    if(value!.isEmpty){
+                      return "Isira seu peso!";
+                    }
+                  },
+                ),
+                TextFormField(
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                      labelText: "Altura (cm)",
+                      labelStyle: TextStyle(color: Colors.green)),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.green, fontSize: 25),
+                  controller: alturaController,
+                  validator: (value) {
+                    if(value!.isEmpty){
+                      return "Insira seu peso!";
+                    }
+                  },
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10, bottom: 0),
+                  child: Container(
+                    height: 50,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(primary: Colors.green),
+                      onPressed: () {
+                        if(_formKey.currentState!.validate()){
+                          _calculate();
+                        }
+                      },
+                      child: Text(
+                        "Calcular",
+                        style: TextStyle(color: Colors.white, fontSize: 25),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Text(
-                _infoText,
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.green, fontSize: 25),
-              )
-            ],
-          ),
+                Text(
+                  _infoText,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.green, fontSize: 25),
+                )
+              ],
+            ),
+          )
         ));
   }
 }
